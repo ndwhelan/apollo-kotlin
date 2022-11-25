@@ -505,7 +505,7 @@ abstract class DefaultApolloExtension(
       codegenProvider: TaskProvider<ApolloGenerateSourcesTask>,
   ) {
     val registerOperationsConfig = service.registerOperationsConfig
-    if (registerOperationsConfig != null) {
+    if (service.hasRegisterOperationsConfig) {
       project.tasks.register(ModelNames.registerApolloOperations(service), ApolloRegisterOperationsTask::class.java) { task ->
         task.group = TASK_GROUP
 
@@ -833,10 +833,34 @@ abstract class DefaultApolloExtension(
   }
 
   private fun registerDownloadSchemaTasks(service: DefaultService) {
-    val introspection = service.introspection
+    check(!service.hasIntrospection || !service.schemaConfig.hasIntrospection) {
+      """
+        Apollo: duplicate introspection {} detected:
+          
+        apollo {
+          // Remove this block
+          introspection {
+            // ...
+          }
+          schema {
+            // Keep this one
+            introspection {
+              // ...
+            }
+          }
+        }
+      """.trimIndent()
+    }
+    val introspection = when {
+      service.schemaConfig.hasIntrospection -> service.schemaConfig.introspection
+      service.hasIntrospection -> service.introspection
+      else -> null
+    }
     if (introspection != null) {
+      check(introspection.endpointUrl.isPresent) {
+        "Apollo: endpointUrl is mandatory in introspection {} block"
+      }
       project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
-
         task.group = TASK_GROUP
         task.projectRootDir = project.rootDir.absolutePath
         task.endpoint.set(introspection.endpointUrl)
@@ -844,9 +868,38 @@ abstract class DefaultApolloExtension(
         task.schema.set(project.provider { lazySchemaFileForDownload(service, introspection.schemaFile) })
       }
     }
-    val registry = service.registry
+
+    check(!service.hasRegistry || !service.schemaConfig.hasRegistry) {
+      """
+        Apollo: duplicate registry {} detected:
+          
+        apollo {
+          // Remove this block
+          registry {
+            // ...
+          }
+          schema {
+            // Keep this one
+            registry {
+              // ...
+            }
+          }
+        }
+      """.trimIndent()
+    }
+    val registry = when {
+      service.schemaConfig.hasRegistry -> service.schemaConfig.registry
+      service.hasRegistry -> service.registry
+      else -> null
+    }
     if (registry != null) {
       project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
+        check(registry.graph.isPresent) {
+          "Apollo: graph is mandatory in registry {} block"
+        }
+        check(registry.key.isPresent) {
+          "Apollo: key is mandatory in registry {} block"
+        }
 
         task.group = TASK_GROUP
         task.projectRootDir = project.rootDir.absolutePath

@@ -19,7 +19,9 @@ class DefaultSchemaConfig(objects: ObjectFactory) : SchemaConfig {
   var coordinates: String? = null
 
   val introspection = DefaultIntrospection(objects)
+  var hasIntrospection = false
   val registry = DefaultRegistry(objects)
+  var hasRegistry = false
 
   override fun fromFile(file: Any) {
     files.from(file)
@@ -38,10 +40,12 @@ class DefaultSchemaConfig(objects: ObjectFactory) : SchemaConfig {
   }
 
   override fun introspection(configure: Action<in Introspection>) {
+    hasIntrospection = true
     configure.execute(introspection)
   }
 
   override fun registry(configure: Action<in Registry>) {
+    hasRegistry = true
     configure.execute(registry)
   }
 

@@ -51,47 +51,36 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   val introspection: DefaultIntrospection = DefaultIntrospection(objects)
+  var hasIntrospection = false
 
   override fun introspection(configure: Action<in Introspection>) {
+    hasIntrospection = true
     configure.execute(introspection)
-
-    if (!introspection.endpointUrl.isPresent) {
-      throw IllegalArgumentException("introspection must have a url")
-    }
   }
 
   val registry: DefaultRegistry = DefaultRegistry(objects)
+  var hasRegistry = false
 
   override fun registry(configure: Action<in Registry>) {
+    hasRegistry = true
     configure.execute(registry)
-
-    if (!registry.graph.isPresent) {
-      throw IllegalArgumentException("registry must have a graph")
-    }
-    if (!registry.key.isPresent) {
-      throw IllegalArgumentException("registry must have a key")
-    }
   }
 
-  var registerOperationsConfig: DefaultRegisterOperationsConfig? = null
+  val registerOperationsConfig: DefaultRegisterOperationsConfig = DefaultRegisterOperationsConfig(objects)
+  var hasRegisterOperationsConfig = false
 
   override fun registerOperations(configure: Action<in RegisterOperationsConfig>) {
+    hasRegisterOperationsConfig = true
     generateOperationOutput.set(true)
 
-    val registerOperationsConfig = objects.newInstance(DefaultRegisterOperationsConfig::class.java)
-
-    if (this.registerOperationsConfig != null) {
-      throw IllegalArgumentException("there must be only one registerOperations block")
-    }
-
     configure.execute(registerOperationsConfig)
-
-    this.registerOperationsConfig = registerOperationsConfig
   }
 
-  val schemaConfig: SchemaConfig = DefaultSchemaConfig(objects)
+  val schemaConfig = DefaultSchemaConfig(objects)
+  var hasSchemaConfig = false
 
   override fun schema(configure: Action<in SchemaConfig>) {
+    hasSchemaConfig = true
     configure.execute(schemaConfig)
   }
 
