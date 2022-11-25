@@ -131,12 +131,18 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       if (registerDefaultService) {
+        val packageName = defaultService.packageName.orNull
+        val packageNameLine = if (packageName != null) {
+          "packageName.set(\"$packageName\")"
+        } else {
+          "packageNamesFromFilePaths()"
+        }
         println("""
             Apollo: using the default service is deprecated and will be removed in a future version. Please define your service explicitly:
             
             apollo {
               service("myService") {
-                packageName.set("com.example")
+                $packageNameLine
               }
             }
           """.trimIndent())
