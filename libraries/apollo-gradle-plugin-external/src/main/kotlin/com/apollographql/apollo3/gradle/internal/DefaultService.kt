@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
+import com.apollographql.apollo3.gradle.api.SchemaConfig
 import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -49,33 +50,19 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     graphqlSourceDirectorySet.srcDir(directory)
   }
 
-  var introspection: DefaultIntrospection? = null
+  val introspection: DefaultIntrospection = DefaultIntrospection(objects)
 
   override fun introspection(configure: Action<in Introspection>) {
-    val introspection = objects.newInstance(DefaultIntrospection::class.java)
-
-    if (this.introspection != null) {
-      throw IllegalArgumentException("there must be only one introspection block")
-    }
-
     configure.execute(introspection)
 
     if (!introspection.endpointUrl.isPresent) {
       throw IllegalArgumentException("introspection must have a url")
     }
-
-    this.introspection = introspection
   }
 
-  var registry: DefaultRegistry? = null
+  val registry: DefaultRegistry = DefaultRegistry(objects)
 
   override fun registry(configure: Action<in Registry>) {
-    val registry = objects.newInstance(DefaultRegistry::class.java)
-
-    if (this.registry != null) {
-      throw IllegalArgumentException("there must be only one registry block")
-    }
-
     configure.execute(registry)
 
     if (!registry.graph.isPresent) {
@@ -84,8 +71,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     if (!registry.key.isPresent) {
       throw IllegalArgumentException("registry must have a key")
     }
-
-    this.registry = registry
   }
 
   var registerOperationsConfig: DefaultRegisterOperationsConfig? = null
@@ -102,6 +87,12 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     configure.execute(registerOperationsConfig)
 
     this.registerOperationsConfig = registerOperationsConfig
+  }
+
+  val schemaConfig: SchemaConfig = DefaultSchemaConfig(objects)
+
+  override fun schema(configure: Action<in SchemaConfig>) {
+    configure.execute(schemaConfig)
   }
 
   var operationOutputAction: Action<in Service.OperationOutputConnection>? = null

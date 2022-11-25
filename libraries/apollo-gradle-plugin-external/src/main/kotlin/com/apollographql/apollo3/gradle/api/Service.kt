@@ -73,6 +73,7 @@ interface Service {
   /**
    * A shorthand property that will be used if [schemaFiles] is empty
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { fromFile() } "))
   val schemaFile: RegularFileProperty
 
   /**
@@ -83,6 +84,7 @@ interface Service {
    *
    * By default, the plugin collects all "schema.[json|sdl|graphqls]" file in the source roots
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { fromFiles() } "))
   val schemaFiles: ConfigurableFileCollection
 
   /**
@@ -104,12 +106,12 @@ interface Service {
    *
    * Default value: the empty map
    */
-  @Deprecated("Use mapScalar() instead")
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalar() }"))
   @ApolloDeprecatedSince(v3_0_1)
   val customScalarsMapping: MapProperty<String, String>
 
   @Deprecated("customTypeMapping is a helper property to help migrating to 3.x " +
-      "and will be removed in a future version. Use mapScalar() instead.")
+      "and will be removed in a future version. Use schema { mapScalar() } instead.")
   @ApolloDeprecatedSince(v3_0_0)
   val customTypeMapping: MapProperty<String, String>
 
@@ -122,6 +124,7 @@ interface Service {
    *
    * For example: `mapScalar("Date", "com.example.Date")`
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalar() }"))
   fun mapScalar(graphQLName: String, targetName: String)
 
   /**
@@ -140,81 +143,97 @@ interface Service {
    * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter.INSTANCE")` (a top level property or object)
    * - `mapScalar("Date", "com.example.Date", "new com.example.DateAdapter()")` (create a new instance every time)
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalar() }"))
   fun mapScalar(graphQLName: String, targetName: String, expression: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.String] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinString() }"))
   fun mapScalarToKotlinString(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Int] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinInt() }"))
   fun mapScalarToKotlinInt(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Double] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinDouble() }"))
   fun mapScalarToKotlinDouble(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Float] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinFloat() }"))
   fun mapScalarToKotlinFloat(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Long] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinLong() }"))
   fun mapScalarToKotlinLong(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Boolean] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinBoolean() }"))
   fun mapScalarToKotlinBoolean(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Any] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToKotlinAny() }"))
   fun mapScalarToKotlinAny(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.String] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaString() }"))
   fun mapScalarToJavaString(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.Integer] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaInteger() }"))
   fun mapScalarToJavaInteger(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.Double] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaDouble() }"))
   fun mapScalarToJavaDouble(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.Float] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaFloat() }"))
   fun mapScalarToJavaFloat(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.Long] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaLong() }"))
   fun mapScalarToJavaLong(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.Boolean] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaBoolean() }"))
   fun mapScalarToJavaBoolean(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [java.lang.Object] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToJavaObject() }"))
   fun mapScalarToJavaObject(graphQLName: String)
 
   /**
    * Map the given GraphQL scalar to [com.apollographql.apollo3.api.Upload] and use the builtin adapter
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { mapScalarToUpload() }"))
   fun mapScalarToUpload(graphQLName: String)
 
   /**
@@ -330,6 +349,7 @@ interface Service {
    *
    * Default value: false
    */
+  @Deprecated("This is used for backward compatibility with 2.x and will be removed in a future version")
   val useSchemaPackageNameForFragments: Property<Boolean>
 
   /**
@@ -377,6 +397,7 @@ interface Service {
    *
    * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { alwaysGenerateTypesMatching.set() }"))
   val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
@@ -424,6 +445,7 @@ interface Service {
    *
    * Default: false
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { generateSchema.set(true) }"))
   val generateSchema: Property<Boolean>
 
   /**
@@ -431,6 +453,7 @@ interface Service {
    *
    * Default: "__Schema"
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { generatedSchemaName.set(true) }"))
   val generatedSchemaName: Property<String>
 
   /**
@@ -458,6 +481,7 @@ interface Service {
    * cases too.
    */
   @ApolloExperimental
+  @Deprecated("use schema {} instead", ReplaceWith("schema { generateDataBuilders.set(true) }"))
   val generateDataBuilders: Property<Boolean>
 
   /**
@@ -534,7 +558,7 @@ interface Service {
 
   /**
    * The directory where the test builders will be written.
-   * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
+   * If you want a [DirectoryProperty] that carries the task dependency, use [testDirConnection]
    */
   val testDir: DirectoryProperty
 
@@ -566,6 +590,7 @@ interface Service {
    *
    * Default: emptyList()
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { sealedClassesForEnumsMatching.set() }"))
   val sealedClassesForEnumsMatching: ListProperty<String>
 
   /**
@@ -578,6 +603,7 @@ interface Service {
    *
    * Default: listOf(".*")
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { classesForEnumsMatching.set() }"))
   val classesForEnumsMatching: ListProperty<String>
 
   /**
@@ -704,23 +730,33 @@ interface Service {
    * @param file A Json file containing an array of GraphQL coordinates
    *
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { usedCoordinates() }"))
   fun usedCoordinates(file: File)
+
+  @Deprecated("use schema {} instead", ReplaceWith("schema { usedCoordinates() }"))
   fun usedCoordinates(file: String)
 
   /**
    * Configures [Introspection] to download an introspection Json schema
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { classesForEnumsMatching.set() }"))
   fun introspection(configure: Action<in Introspection>)
 
   /**
    * Configures [Registry] to download a SDL schema from a studio registry
    */
+  @Deprecated("use schema {} instead", ReplaceWith("schema { classesForEnumsMatching.set() }"))
   fun registry(configure: Action<in Registry>)
 
   /**
    * Configures operation safelisting (requires an [Apollo Studio](https://www.apollographql.com/docs/studio/) account)
    */
   fun registerOperations(configure: Action<in RegisterOperationsConfig>)
+
+  /**
+   *
+   */
+  fun schema(configure: Action<in SchemaConfig>)
 
   /**
    * overrides the way operationOutput is connected.
