@@ -837,4 +837,6 @@ interface Service {
      */
     val task: TaskProvider<out Task>
   }
+
+  fun parentProject(path: String)
 }

@@ -50,7 +50,7 @@ abstract class DefaultApolloExtension(
     private val defaultService: DefaultService,
 ) : ApolloExtension, Service by defaultService {
 
-  private val services = mutableListOf<DefaultService>()
+  val services = project.objects.domainObjectContainer(Service::class.java)
   private val checkVersionsTask: TaskProvider<Task>
   private val metadataConfiguration: Configuration
   private val schemaConfiguration: Configuration
@@ -411,6 +411,35 @@ abstract class DefaultApolloExtension(
 
     registerDownloadSchemaTasks(service)
     maybeRegisterRegisterOperationsTasks(project, service, codegenTaskProvider)
+
+    service.parentProjects.forEach { parentPath ->
+      // Add the dependency to the parent
+
+      project.dependencies.apply {
+        println("adding dependency: $parentPath")
+        add("apolloMetadata", project(mapOf("path" to parentPath)))
+        add("apolloSchema", project(mapOf("path" to parentPath)))
+      }
+
+      val parentProject = project.project(parentPath)
+      // Add the dependency in the other direction
+      parentProject.pluginManager.withPlugin("com.apollographql.apollo3") {
+        parentProject.configurations.all {
+          if (it.name == "usedCoordinates") {
+            parentProject.dependencies.create(
+                parentProject.dependencies.project(mapOf("path" to project.path))
+            )
+          }
+        }
+        // And make sure the metadata is generated
+        (parentProject.extensions.findByType(ApolloExtension::class.java) as DefaultApolloExtension)
+            .services.all {
+              if (it.name == service.name) {
+                it.generateApolloMetadata.set(true)
+              }
+            }
+      }
+    }
   }
 
   private fun registerUsedCoordinatesTask(

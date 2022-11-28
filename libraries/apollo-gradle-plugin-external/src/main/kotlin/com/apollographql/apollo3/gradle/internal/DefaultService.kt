@@ -183,4 +183,10 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun mapScalarToJavaObject(graphQLName: String) = mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo3.api.Adapters.AnyAdapter")
 
   override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo3.api.Upload", "com.apollographql.apollo3.api.UploadAdapter")
+
+  val parentProjects = mutableListOf<String>()
+
+  override fun parentProject(path: String) {
+    parentProjects.add(path)
+  }
 }
