@@ -22,9 +22,9 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         // Because we use 1.6.10 during sync and this version is not on mavenCentral
         includeVersion("org.jetbrains.kotlin.plugin.serialization", "org.jetbrains.kotlin.plugin.serialization.gradle.plugin", "1.6.10")
 
-        // For org.jetbrains.intellij
-        includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
-        includeModule("org.jetbrains.intellij.plugins", "gradle-intellij-plugin")
+//        // For org.jetbrains.intellij
+//        includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
+//        includeModule("org.jetbrains.intellij.plugins", "gradle-intellij-plugin")
         includeModule("gradle.plugin.org.jetbrains.gradle.plugin.idea-ext", "gradle-idea-ext")
 
         // For org.jetbrains.changelog
@@ -40,6 +40,10 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         // https://github.com/Kotlin/kotlinx-nodejs/issues/16
         includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
       }
+    }
+
+    maven {
+      url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
     }
   }
 }

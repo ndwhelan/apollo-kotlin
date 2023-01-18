@@ -88,6 +88,7 @@ kotlin {
 
 configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  namespace ="com.apollographql.apollo3.cache.normalized.sql"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()
