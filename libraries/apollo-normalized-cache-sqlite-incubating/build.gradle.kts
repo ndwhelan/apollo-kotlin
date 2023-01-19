@@ -28,7 +28,7 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
   database("Blob2Database") {
     packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.blob2"
-    schemaOutputDirectory = file("src/commonMain/sqldelight/blob2/schema")
+    schemaOutputDirectory = file("sqldelight/blob2/schema")
     sourceFolders = listOf("sqldelight/blob2/")
   }
 }
