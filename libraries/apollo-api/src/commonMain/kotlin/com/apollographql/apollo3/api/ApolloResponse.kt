@@ -34,6 +34,14 @@ private constructor(
     val errors: List<Error>?,
 
     /**
+     * The exception that caused the failure of the GraphQL [operation] execution.
+     * For instance this will be non null in case of network failure.
+     * This will be `null` if [operation] execution was successful.
+     */
+    @JvmField
+    val exception: ApolloException?,
+
+    /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
      */
     @JvmField
@@ -83,6 +91,7 @@ private constructor(
   fun newBuilder(): Builder<D> {
     return Builder(operation, requestUuid, data)
         .errors(errors)
+        .exception(exception)
         .extensions(extensions)
         .addExecutionContext(executionContext)
         .isLast(isLast)
@@ -95,6 +104,7 @@ private constructor(
   ) {
     private var executionContext: ExecutionContext = ExecutionContext.Empty
     private var errors: List<Error>? = null
+    private var exception: ApolloException? = null
     private var extensions: Map<String, Any?>? = null
     private var isLast = false
 
@@ -104,6 +114,10 @@ private constructor(
 
     fun errors(errors: List<Error>?) = apply {
       this.errors = errors
+    }
+
+    fun exception(exception: ApolloException?) = apply {
+      this.exception = exception
     }
 
     fun extensions(extensions: Map<String, Any?>?) = apply {
@@ -127,6 +141,7 @@ private constructor(
           executionContext = executionContext,
           extensions = extensions ?: emptyMap(),
           errors = errors,
+          exception = exception,
           isLast = isLast,
       )
     }
